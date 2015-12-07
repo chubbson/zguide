@@ -110,17 +110,15 @@ namespace Examples
 				ZFrame frame;
 				while (true)
 				{
-					if (null != (frame = listener.ReceiveFrame(out error)))
-					{
-						using (frame)
-							frame.DumpZfrm();
-					}
-					else
+					if (null == (frame = listener.ReceiveFrame(out error)))
 					{
 						if (error == ZError.ETERM)
-							return;	// Interrupted
+							return; // Interrupted
 						throw new ZException(error);
 					}
+					else
+						using (frame)
+							frame.DumpZfrm();
 				}
 			}
 		}

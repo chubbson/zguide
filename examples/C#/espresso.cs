@@ -59,8 +59,8 @@ namespace Examples
 					{
 						rng.GetBytes(bytes);
 					}
-
-					if (!publisher.SendBytes(bytes, 0, bytes.Length, ZSocketFlags.None, out error))
+					var frame = new ZFrame(bytes);
+					if (!publisher.Send(frame, out error))
 					{
 						if (error == ZError.ETERM)
 							return;	// Interrupted
@@ -84,12 +84,11 @@ namespace Examples
 				subscriber.Subscribe("B");
 
 				ZError error;
+				ZFrame frame;
 				int count = 0;
 				while (count < 5)
 				{
-					var bytes = new byte[10];
-					int bytesLength;
-					if (-1 == (bytesLength = subscriber.ReceiveBytes(bytes, 0, bytes.Length, ZSocketFlags.None, out error)))
+					if (null == (frame = subscriber.ReceiveFrame(out error)))
 					{
 						if (error == ZError.ETERM)
 							return;	// Interrupted

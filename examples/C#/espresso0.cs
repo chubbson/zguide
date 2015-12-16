@@ -18,7 +18,6 @@ namespace Examples
 			//
 			// Author: chubbson
 			//
-
 			using (var context = new ZContext())
 			using (var subscriber = new ZSocket(context, ZSocketType.XSUB))
 			using (var publisher = new ZSocket(context, ZSocketType.XPUB))
@@ -90,7 +89,6 @@ namespace Examples
 					}
 					++count;
 				}
-
 				Console.WriteLine("I: subscriber counted {0}", count);
 			}
 		}
@@ -110,17 +108,14 @@ namespace Examples
 				ZFrame frame;
 				while (true)
 				{
-					if (null != (frame = listener.ReceiveFrame(out error)))
-					{
-						using (frame)
-							frame.DumpZfrm();
-					}
-					else
+					if (null == (frame = listener.ReceiveFrame(out error)))
 					{
 						if (error == ZError.ETERM)
-							return;	// Interrupted
+							return; // Interrupted
 						throw new ZException(error);
 					}
+					using (frame)
+						frame.DumpZfrm();
 				}
 			}
 		}

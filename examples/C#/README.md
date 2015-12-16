@@ -275,17 +275,19 @@ Use with LPClient.
 #### [MDBroker](https://github.com/metadings/zguide/blob/master/examples/C%23/mdbroker.cs), [MDWorker](https://github.com/metadings/zguide/blob/master/examples/C%23/mdworker.cs), [MDClient](https://github.com/metadings/zguide/blob/master/examples/C%23/mdclient.cs)
 
 ```
-	Usage: ./ZGuideExamples.exe MDBroker [-v] [--verbose]
+	Usage: ./ZGuideExamples.exe MDBroker [Endpoint] [-v|--verbose]
+
+	    Endpoint  Where MDBroker should bind on
+	              Default is tcp://*:5555
+	    -v        Verbose mode
+	              Default verbose mode is not active
+				
+	Usage: ./ZGuideExamples.exe MDWorker [-v|--verbose]
 
 	    -v 		Verbose mode activated
 	            Default verbose is deactivated
 				
-	Usage: ./ZGuideExamples.exe MDWorker [-v] [--verbose]
-
-	    -v 		Verbose mode activated
-	            Default verbose is deactivated
-				
-	Usage: ./ZGuideExamples.exe MDClient [-v] [--verbose]
+	Usage: ./ZGuideExamples.exe MDClient [-v|--verbose]
 
 	    -v 		Verbose mode activated
 	            Default verbose is deactivated

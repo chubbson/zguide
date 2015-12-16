@@ -512,20 +512,37 @@ namespace Examples
         //  then process messages on the broker Socket:
         public static void MDBroker(string[] args)
         {
-            bool verbose = (args.Any(e => e.ToLower().Equals("-v")
-                                       || e.ToLower().Equals("--verbose")));
-            Console.WriteLine("Verbose: {0}", verbose);
+			CancellationTokenSource cancellor = new CancellationTokenSource();
+			Console.CancelKeyPress += (s, ea) =>
+			{
+				ea.Cancel = true;
+				cancellor.Cancel();
+			};
 
-            CancellationTokenSource cancellor = new CancellationTokenSource();
-            Console.CancelKeyPress += (s, ea) =>
-            {
-                ea.Cancel = true;
-                cancellor.Cancel();
-            };
+			args = args?.Select(e => e.ToLowerInvariant()).ToArray() ?? new string[] {};
+			var argsVerbose = args.Where(e => e.Equals("-v") || e.Equals("--verbose")).ToList();
+			bool verbose = argsVerbose.Any();
+			Console.WriteLine("Verbose: {0}", verbose);
+			var argsExVerbose = args.Except(argsVerbose).ToList();
 
+			if (argsExVerbose.Count < 1)
+			{
+				Console.WriteLine();
+				Console.WriteLine("Usage: ./{0} MDBroker [Endpoint] [-v|--verbose]", AppDomain.CurrentDomain.FriendlyName);
+				Console.WriteLine();
+				Console.WriteLine("    Endpoint  Where MDBroker should bind on");
+				Console.WriteLine("              Default is tcp://*:5555");
+				Console.WriteLine("    -v        Verbose mode");
+				Console.WriteLine("              Default verbose mode is not active");
+                Console.WriteLine();
+				if (argsExVerbose.Count < 1)
+					argsExVerbose.Add("tcp://*:5555");
+			}
+
+	        var brokerBinding = argsExVerbose[0];
             using (Broker broker = new Broker(verbose))
             {
-                broker.Bind("tcp://*:5555");
+                broker.Bind(brokerBinding);
                 // Get and process messages forever or until interrupted
                 while (true)
                 {
